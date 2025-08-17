@@ -1,0 +1,121 @@
+name: CI Build
+
+# Trigger the workflow on push and pull requests
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test-and-lint:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, '3.10']
+    
+    steps:
+    # Checkout the repository code
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    # Set up Python environment
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    # Cache pip dependencies for faster builds
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    # Install dependencies
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+        # Install common linting and testing tools if not in requirements
+        pip install flake8 pytest pytest-cov black isort
+    
+    # Run code formatting check with Black
+    - name: Check code formatting with Black
+      run: |
+        black --check --diff .
+      continue-on-error: false
+    
+    # Run import sorting check with isort
+    - name: Check import sorting with isort
+      run: |
+        isort --check-only --diff .
+      continue-on-error: false
+    
+    # Run linting with flake8
+    - name: Lint with flake8
+      run: |
+        # Stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # Exit-zero treats all errors as warnings
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+    
+    # Run tests with pytest
+    - name: Run tests with pytest
+      run: |
+        if [ -d tests ] || [ -d test ]; then
+          pytest --cov=src --cov-report=xml --cov-report=term-missing
+        else
+          echo "No test directory found, skipping tests"
+        fi
+    
+    # Upload coverage reports to Codecov (optional)
+    - name: Upload coverage to Codecov
+      if: matrix.python-version == '3.9'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Checkout the repository code
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    # Set up Python for security scanning
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    # Install security scanning tools
+    - name: Install security tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install safety bandit
+    
+    # Check for known security vulnerabilities in dependencies
+    - name: Safety check
+      run: |
+        if [ -f requirements.txt ]; then
+          safety check --file requirements.txt
+        else
+          echo "No requirements.txt found, skipping safety check"
+        fi
+      continue-on-error: true
+    
+    # Run security linting with bandit
+    - name: Security lint with bandit
+      run: |
+        bandit -r . -f json -o bandit-report.json || true
+        bandit -r . --severity-level medium
+      continue-on-error: true
