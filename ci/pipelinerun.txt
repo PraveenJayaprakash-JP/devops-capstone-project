@@ -1,0 +1,234 @@
+# Tekton Pipeline Run Logs
+# DevOps Capstone Project - Sample Pipeline Execution
+# Date: August 17, 2025
+# Pipeline: build-test-deploy
+# Run ID: pipelinerun-xyz123
+
+================================================================================
+PIPELINE RUN STARTED
+================================================================================
+Name: build-test-deploy-run-xyz123
+Namespace: devops-capstone
+Start Time: 2025-08-17T10:00:00Z
+Status: Running
+
+================================================================================
+TASK 1: BUILD
+================================================================================
+Task Name: build-application
+Start Time: 2025-08-17T10:00:05Z
+
+[build-step] Initializing build environment...
+[build-step] Using Node.js v18.17.0
+[build-step] Using npm v9.8.1
+[build-step] 
+[build-step] + Installing dependencies
+[build-step] npm WARN deprecated inflight@1.0.6: This module is not supported
+[build-step] npm WARN deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+[build-step] 
+[build-step] added 245 packages, and audited 246 packages in 15s
+[build-step] 
+[build-step] 12 packages are looking for funding
+[build-step]   run `npm fund` for details
+[build-step] 
+[build-step] found 0 vulnerabilities
+[build-step] 
+[build-step] + Building application
+[build-step] > devops-capstone@1.0.0 build
+[build-step] > webpack --mode=production
+[build-step] 
+[build-step] asset main.js 156 KiB [emitted] [minimized] (name: main)
+[build-step] asset index.html 267 bytes [emitted]
+[build-step] runtime modules 1.36 KiB 6 modules
+[build-step] modules by path ./src/ 12.4 KiB
+[build-step]   ./src/index.js 2.1 KiB [built] [code generated]
+[build-step]   ./src/app.js 8.3 KiB [built] [code generated]
+[build-step]   ./src/utils.js 2.0 KiB [built] [code generated]
+[build-step] modules by path ./node_modules/ 142 KiB 45 modules
+[build-step] webpack 5.88.2 compiled successfully in 3421 ms
+[build-step] 
+[build-step] + Build artifacts created successfully
+[build-step] Build completed in 45.2s
+
+Task Status: Succeeded
+End Time: 2025-08-17T10:00:50Z
+Duration: 45s
+
+================================================================================
+TASK 2: TEST
+================================================================================
+Task Name: run-tests
+Start Time: 2025-08-17T10:00:55Z
+
+[test-step] Initializing test environment...
+[test-step] Setting up test database...
+[test-step] 
+[test-step] + Running unit tests
+[test-step] 
+[test-step] > devops-capstone@1.0.0 test:unit
+[test-step] > jest --testPathPattern=unit
+[test-step] 
+[test-step]  PASS  tests/unit/app.test.js
+[test-step]   App Component
+[test-step]     ✓ should render welcome message (15 ms)
+[test-step]     ✓ should handle user input correctly (8 ms)
+[test-step]     ✓ should validate form data (12 ms)
+[test-step] 
+[test-step]  PASS  tests/unit/utils.test.js
+[test-step]   Utility Functions
+[test-step]     ✓ should format dates correctly (3 ms)
+[test-step]     ✓ should validate email addresses (5 ms)
+[test-step]     ✓ should calculate metrics accurately (7 ms)
+[test-step] 
+[test-step]  PASS  tests/unit/api.test.js
+[test-step]   API Endpoints
+[test-step]     ✓ should handle GET requests (18 ms)
+[test-step]     ✓ should handle POST requests (14 ms)
+[test-step]     ✓ should handle error responses (9 ms)
+[test-step] 
+[test-step] Test Suites: 3 passed, 3 total
+[test-step] Tests:       9 passed, 9 total
+[test-step] Snapshots:   0 total
+[test-step] Time:        2.156 s
+[test-step] 
+[test-step] + Running integration tests
+[test-step] 
+[test-step] > devops-capstone@1.0.0 test:integration
+[test-step] > jest --testPathPattern=integration
+[test-step] 
+[test-step]  PASS  tests/integration/database.test.js
+[test-step]   Database Operations
+[test-step]     ✓ should connect to database (245 ms)
+[test-step]     ✓ should perform CRUD operations (189 ms)
+[test-step]     ✓ should handle transactions (156 ms)
+[test-step] 
+[test-step]  PASS  tests/integration/api.test.js
+[test-step]   API Integration
+[test-step]     ✓ should handle end-to-end requests (423 ms)
+[test-step]     ✓ should authenticate users (298 ms)
+[test-step]     ✓ should process data pipeline (345 ms)
+[test-step] 
+[test-step] Test Suites: 2 passed, 2 total
+[test-step] Tests:       6 passed, 6 total
+[test-step] Snapshots:   0 total
+[test-step] Time:        3.847 s
+[test-step] 
+[test-step] + Running security scans
+[test-step] npm audit report
+[test-step] 
+[test-step] found 0 vulnerabilities
+[test-step] 
+[test-step] + Code coverage report
+[test-step] ========================= Coverage summary =========================
+[test-step] Statements   : 92.5% ( 185/200 )
+[test-step] Branches     : 88.9% ( 48/54 )
+[test-step] Functions    : 95.2% ( 40/42 )
+[test-step] Lines        : 91.8% ( 179/195 )
+[test-step] ================================================================================
+[test-step] 
+[test-step] All tests passed successfully!
+
+Task Status: Succeeded
+End Time: 2025-08-17T10:01:55Z
+Duration: 60s
+
+================================================================================
+TASK 3: DEPLOY
+================================================================================
+Task Name: deploy-application
+Start Time: 2025-08-17T10:02:00Z
+
+[deploy-step] Initializing deployment...
+[deploy-step] Target Environment: staging
+[deploy-step] Cluster: devops-capstone-staging
+[deploy-step] Namespace: capstone-app
+[deploy-step] 
+[deploy-step] + Building Docker image
+[deploy-step] docker build -t devops-capstone:v1.2.3 .
+[deploy-step] [+] Building 23.4s (12/12) FINISHED
+[deploy-step]  => [internal] load build definition from Dockerfile                    0.1s
+[deploy-step]  => => transferring dockerfile: 456B                                  0.0s
+[deploy-step]  => [internal] load .dockerignore                                     0.1s
+[deploy-step]  => => transferring context: 127B                                     0.0s
+[deploy-step]  => [internal] load metadata for docker.io/library/node:18-alpine     2.3s
+[deploy-step]  => [1/7] FROM docker.io/library/node:18-alpine@sha256:abc123...     4.2s
+[deploy-step]  => [internal] load build context                                     0.2s
+[deploy-step]  => => transferring context: 15.67MB                                  0.1s
+[deploy-step]  => [2/7] WORKDIR /app                                                0.1s
+[deploy-step]  => [3/7] COPY package*.json ./                                       0.1s
+[deploy-step]  => [4/7] RUN npm ci --only=production                               8.9s
+[deploy-step]  => [5/7] COPY . .                                                    0.3s
+[deploy-step]  => [6/7] RUN npm run build                                           5.8s
+[deploy-step]  => [7/7] EXPOSE 3000                                                 0.1s
+[deploy-step]  => exporting to image                                                1.2s
+[deploy-step]  => => exporting layers                                               1.1s
+[deploy-step]  => => writing image sha256:def456...                                 0.0s
+[deploy-step]  => => naming to docker.io/library/devops-capstone:v1.2.3            0.0s
+[deploy-step] 
+[deploy-step] + Pushing to container registry
+[deploy-step] docker push registry.example.com/devops-capstone:v1.2.3
+[deploy-step] The push refers to repository [registry.example.com/devops-capstone]
+[deploy-step] 8c5a7da906c5: Pushed
+[deploy-step] 4f4fb700ef54: Pushed
+[deploy-step] 7f70b8b98e9f: Pushed
+[deploy-step] 1b6b826c2c4f: Pushed
+[deploy-step] v1.2.3: digest: sha256:ghi789... size: 1856
+[deploy-step] 
+[deploy-step] + Applying Kubernetes manifests
+[deploy-step] kubectl apply -f k8s/
+[deploy-step] deployment.apps/devops-capstone created
+[deploy-step] service/devops-capstone-service created
+[deploy-step] ingress.networking.k8s.io/devops-capstone-ingress created
+[deploy-step] configmap/app-config created
+[deploy-step] secret/app-secrets created
+[deploy-step] 
+[deploy-step] + Waiting for deployment to be ready
+[deploy-step] kubectl rollout status deployment/devops-capstone -n capstone-app
+[deploy-step] Waiting for deployment "devops-capstone" rollout to finish: 0 of 3 updated replicas are available...
+[deploy-step] Waiting for deployment "devops-capstone" rollout to finish: 1 of 3 updated replicas are available...
+[deploy-step] Waiting for deployment "devops-capstone" rollout to finish: 2 of 3 updated replicas are available...
+[deploy-step] deployment "devops-capstone" successfully rolled out
+[deploy-step] 
+[deploy-step] + Running health checks
+[deploy-step] curl -f http://devops-capstone-service:3000/health
+[deploy-step] {"status":"healthy","timestamp":"2025-08-17T10:04:12Z","version":"v1.2.3"}
+[deploy-step] 
+[deploy-step] + Deployment completed successfully!
+[deploy-step] Application URL: https://staging.devops-capstone.example.com
+[deploy-step] Version: v1.2.3
+[deploy-step] Replicas: 3/3 ready
+
+Task Status: Succeeded
+End Time: 2025-08-17T10:04:30Z
+Duration: 150s
+
+================================================================================
+PIPELINE RUN COMPLETED
+================================================================================
+Name: build-test-deploy-run-xyz123
+Namespace: devops-capstone
+Start Time: 2025-08-17T10:00:00Z
+End Time: 2025-08-17T10:04:30Z
+Total Duration: 4m30s
+Overall Status: Succeeded
+
+Task Summary:
+- build-application: Succeeded (45s)
+- run-tests: Succeeded (60s)
+- deploy-application: Succeeded (150s)
+
+Artifacts:
+- Docker Image: registry.example.com/devops-capstone:v1.2.3
+- Test Reports: /workspace/test-reports/
+- Coverage Report: /workspace/coverage/
+- Deployment Manifests: /workspace/k8s/
+
+Deployment Details:
+- Environment: staging
+- Namespace: capstone-app
+- URL: https://staging.devops-capstone.example.com
+- Health Status: Healthy
+
+================================================================================
+END OF PIPELINE RUN LOGS
+================================================================================
